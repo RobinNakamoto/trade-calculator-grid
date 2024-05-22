@@ -5,67 +5,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trade Calculator Grid</title>
     <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+        }
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(11, 100px); /* 10 columns + 1 for totals */
-            grid-template-rows: repeat(11, 100px); /* 10 rows + 1 for totals */
+            grid-template-columns: 100px repeat(10, 100px) 200px;
+            grid-template-rows: 100px repeat(10, 100px) 100px;
             gap: 1px;
+            margin: 20px;
         }
         .grid-item {
             width: 100px;
             height: 100px;
-            border: 1px solid #ccc;
+            border: 1px solid black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .wide-item {
+            grid-column: span 2;
+            width: 200px;
+        }
+        .input-cell {
+            width: 100px;
+            height: 100px;
+            border: 1px solid black;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .profit { background-color: #90EE90; } /* Light green for profit */
-        .loss { background-color: #FFB6C1; } /* Light red for loss */
-        .total { font-weight: bold; background-color: #ADD8E6; } /* Light blue for totals */
+        .input-cell input {
+            width: 90%;
+            height: 90%;
+            text-align: center;
+            border: none;
+            background: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .profit {
+            background-color: #b7e1cd;
+        }
+        .loss {
+            background-color: #f84e4e;
+        }
+        .total {
+            background-color: #ADD8E6;
+        }
+        .bottom-right-total {
+            grid-column: 12 / 14;
+            text-align: right;
+        }
     </style>
-    <script>
-        function calculateTotals() {
-            let grid = document.querySelector('.grid-container');
-            let totals = Array(10).fill(0);
-            for (let i = 0; i < 10; i++) {
-                for (let j = 0; j < 10; j++) {
-                    let input = grid.children[i * 11 + j].querySelector('input');
-                    let value = parseFloat(input.value) || 0;
-                    totals[i] += value;
-                    if (value > 0) {
-                        input.className = 'profit';
-                    } else if (value < 0) {
-                        input.className = 'loss';
-                    } else {
-                        input.className = '';
-                    }
-                }
-            }
-            for (let i = 0; i < 10; i++) {
-                grid.children[i * 11 + 10].textContent = totals[i];
-            }
-            grid.children[110].textContent = totals.reduce((a, b) => a + b, 0);
-        }
-
-        window.onload = function() {
-            document.querySelectorAll('input').forEach(input => {
-                input.addEventListener('input', calculateTotals);
-            });
-            calculateTotals();
-        }
-    </script>
 </head>
 <body>
     <div class="grid-container">
-        <!-- Generate 10x10 grid cells with input fields -->
-        ${Array.from({ length: 10 }, (_, i) => `
-            ${Array.from({ length: 10 }, (_, j) => `
-                <div class="grid-item"><input type="number" step="any"></div>
+        <!-- Headers -->
+        <div class="grid-item"></div>
+        ${[...Array(10)].map((_, i) => `<div class="grid-item">${i + 1}</div>`).join('')}
+        <div class="grid-item wide-item">TOT</div>
+
+        <!-- Rows and Inputs -->
+        ${[...Array(10)].map((_, row) => `
+            <div class="grid-item">${row + 1}</div>
+            ${[...Array(10)].map((_, col) => `
+                <div class="input-cell">
+                    <input type="number" step="any" data-row="${row + 1}" data-col="${col + 1}" oninput="calculateTotals()">
+                </div>
             `).join('')}
-            <div class="grid-item total">0</div>
+            <div class="grid-item wide-item total" id="total-row-${row + 1}">0</div>
         `).join('')}
-        <!-- Overall total at the bottom-right corner -->
-        ${Array.from({ length: 10 }, () => `<div class="grid-item total">0</div>`).join('')}
+
+        <!-- Bottom total row -->
+        <div class="grid-item bottom-right-total">TOT</div>
+        <div class="grid-item wide-item total" id="total-overall">0</div>
     </div>
+
+    <script>
+        function calculateTotals() {
+            let rowTotals = Array(10).fill(0);
+            let overallTotal = 0;
+
+            document.querySelectorAll('.input-cell input').forEach(input => {
+                let value = parseFloat(input.value) || 0;
+                let row = parseInt(input.getAttribute('data-row'));
+                let col = parseInt(input.getAttribute('data-col'));
+
+                rowTotals[row - 1] += value;
+                overallTotal += value;
+
+                if (value > 0) {
+                    input.classList.add('profit');
+                    input.classList.remove('loss');
+                } else if (value < 0) {
+                    input.classList.add('loss');
+                    input.classList.remove('profit');
+                } else {
+                    input.classList.remove('profit', 'loss');
+                }
+            });
+
+            rowTotals.forEach((total, index) => {
+                document.getElementById(`total-row-${index + 1}`).textContent = total;
+            });
+
+            document.getElementById('total-overall').textContent = overallTotal;
+        }
+    </script>
 </body>
 </html>
