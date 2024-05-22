@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Calculator Grid</title>
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(11, 100px); /* 10 columns + 1 for totals */
+            grid-template-rows: repeat(11, 100px); /* 10 rows + 1 for totals */
+            gap: 1px;
+        }
+        .grid-item {
+            width: 100px;
+            height: 100px;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .profit { background-color: #90EE90; } /* Light green for profit */
+        .loss { background-color: #FFB6C1; } /* Light red for loss */
+        .total { font-weight: bold; background-color: #ADD8E6; } /* Light blue for totals */
+    </style>
+    <script>
+        function calculateTotals() {
+            let grid = document.querySelector('.grid-container');
+            let totals = Array(10).fill(0);
+            for (let i = 0; i < 10; i++) {
+                for (let j = 0; j < 10; j++) {
+                    let cell = grid.children[i * 11 + j];
+                    let value = parseFloat(cell.textContent) || 0;
+                    totals[i] += value;
+                }
+            }
+            for (let i = 0; i < 10; i++) {
+                grid.children[i * 11 + 10].textContent = totals[i];
+            }
+            grid.children[110].textContent = totals.reduce((a, b) => a + b, 0);
+        }
+
+        window.onload = calculateTotals;
+    </script>
+</head>
+<body>
+    <div class="grid-container">
+        <!-- Example items, replace with your data -->
+        <div class="grid-item profit">100</div>
+        <div class="grid-item loss">-50</div>
+        <!-- Add more cells here -->
+
+        <!-- Totals for each row -->
+        <div class="grid-item total">0</div>
+        <!-- Repeat similar divs for each row -->
+
+        <!-- Totals for each column -->
+        <div class="grid-item total">0</div>
+    </div>
+</body>
+</html>
