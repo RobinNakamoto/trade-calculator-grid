@@ -29,9 +29,16 @@
             let totals = Array(10).fill(0);
             for (let i = 0; i < 10; i++) {
                 for (let j = 0; j < 10; j++) {
-                    let cell = grid.children[i * 11 + j];
-                    let value = parseFloat(cell.textContent) || 0;
+                    let input = grid.children[i * 11 + j].querySelector('input');
+                    let value = parseFloat(input.value) || 0;
                     totals[i] += value;
+                    if (value > 0) {
+                        input.className = 'profit';
+                    } else if (value < 0) {
+                        input.className = 'loss';
+                    } else {
+                        input.className = '';
+                    }
                 }
             }
             for (let i = 0; i < 10; i++) {
@@ -40,22 +47,25 @@
             grid.children[110].textContent = totals.reduce((a, b) => a + b, 0);
         }
 
-        window.onload = calculateTotals;
+        window.onload = function() {
+            document.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', calculateTotals);
+            });
+            calculateTotals();
+        }
     </script>
 </head>
 <body>
     <div class="grid-container">
-        <!-- Example items, replace with your data -->
-        <div class="grid-item profit">100</div>
-        <div class="grid-item loss">-50</div>
-        <!-- Add more cells here -->
-
-        <!-- Totals for each row -->
-        <div class="grid-item total">0</div>
-        <!-- Repeat similar divs for each row -->
-
-        <!-- Totals for each column -->
-        <div class="grid-item total">0</div>
+        <!-- Generate 10x10 grid cells with input fields -->
+        ${Array.from({ length: 10 }, (_, i) => `
+            ${Array.from({ length: 10 }, (_, j) => `
+                <div class="grid-item"><input type="number" step="any"></div>
+            `).join('')}
+            <div class="grid-item total">0</div>
+        `).join('')}
+        <!-- Overall total at the bottom-right corner -->
+        ${Array.from({ length: 10 }, () => `<div class="grid-item total">0</div>`).join('')}
     </div>
 </body>
 </html>
