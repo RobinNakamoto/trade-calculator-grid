@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Profit and Loss Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <!-- Generate top headers 1 to 10 -->
+                    <script>
+                        for (let i = 1; i <= 10; i++) {
+                            document.write(`<th>${i}</th>`);
+                        }
+                    </script>
+                    <th>TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Generate 10 rows -->
+                <script>
+                    for (let i = 0; i < 10; i++) {
+                        document.write('<tr>');
+                        // Add the vertical header
+                        document.write(`<td class="header">${i + 1}</td>`);
+                        // Generate 10 input boxes per row
+                        for (let j = 0; j < 10; j++) {
+                            document.write(`<td><input type="text" class="trade-input" id="input-${i}-${j}" oninput="calculateRow(${i})"></td>`);
+                        }
+                        // Add the profit/loss calculation box at the end of each row
+                        document.write(`<td><input type="text" class="profit-loss" id="result-${i}" readonly></td>`);
+                        document.write('</tr>');
+                    }
+                </script>
+                <tr>
+                    <td colspan="10"></td>
+                    <td class="total-label">TOTAL</td>
+                    <td><input type="text" class="overall-total" id="overall-total" readonly></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

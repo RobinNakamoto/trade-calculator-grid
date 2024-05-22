@@ -1,0 +1,57 @@
+body {
+    font-family: 'Nunito', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    font-size: 20px;
+    padding: 5px;
+}
+
+.trade-input, .profit-loss, .overall-total {
+    width: 70px;
+    height: 70px;
+    text-align: center;
+    border: 1px solid #000;
+    font-size: 20px;
+}
+
+.profit-loss, .overall-total {
+    font-weight: bold;
+}
+
+.header {
+    font-weight: bold;
+}
+
+.total-label {
+    text-align: right;
+    padding-right: 10px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.positive {
+    background-color: #90EE90;
+}
+
+.negative {
+    background-color: #FFB6C1;
+}
